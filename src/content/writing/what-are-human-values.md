@@ -2,7 +2,7 @@
 title: "What are Human Values?"
 pubDate: 2024-04-28
 description: "paper"
-coverImg: /images/covers/klingefjord_5.jpg
+coverImg: /images/covers/what-are-human-values.jpg
 externalUrl: "https://arxiv.org/abs/2404.10636"
 ---
 
