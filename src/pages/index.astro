@@ -72,7 +72,7 @@ const remainingPosts = sortedPosts.filter((post) => !post.data.featured);
       </div>
     </section>
 
-    <!-- About + Organization Section -->
+    <!-- About + Org Section -->
     <section id="about">
       <h2 class="section-header">About</h2>
       <div class="section-content">
@@ -213,18 +213,23 @@ const remainingPosts = sortedPosts.filter((post) => !post.data.featured);
           const mouseX = e.clientX;
           const mouseY = e.clientY;
           
-          // Calculate if cursor is in top 40% of viewport
-          const isInTopArea = mouseY < window.innerHeight * 0.4;
-          
-          // Get card width for centering (default to 300 if not yet rendered)
+          // Get card dimensions (default to 300x400 if not yet rendered)
           const cardWidth = hoverCard.offsetWidth || 300;
+          const cardHeight = hoverCard.offsetHeight || 400;
           
-          // Position the card based on cursor location
+          // Calculate available space above and below cursor
+          const spaceBelow = window.innerHeight - mouseY - 20; // 20px offset
+          const spaceAbove = mouseY - 20; // 20px offset
+          
+          // Determine best position based on available space
+          const showBelow = spaceBelow >= cardHeight || spaceBelow > spaceAbove;
+          
+          // Position the card based on available space
           hoverCard.style.position = "fixed";
           hoverCard.style.left = `${mouseX - (cardWidth/2)}px`;
           
-          if (isInTopArea) {
-            // Position below cursor if in top 40%
+          if (showBelow) {
+            // Position below cursor
             hoverCard.style.top = `${mouseY + 20}px`;
             hoverCard.style.bottom = "auto";
           } else {
@@ -233,9 +238,9 @@ const remainingPosts = sortedPosts.filter((post) => !post.data.featured);
             hoverCard.style.top = "auto";
           }
           
-          // Ensure card stays within viewport bounds
+          // Ensure card stays within viewport bounds horizontally
           const rightEdge = mouseX + (cardWidth/2);
-          if (rightEdge > window.innerWidth) {
+          if (rightEdge > window.innerWidth - 20) {
             hoverCard.style.left = `${window.innerWidth - cardWidth - 20}px`;
           }
           if (mouseX - (cardWidth/2) < 20) {
