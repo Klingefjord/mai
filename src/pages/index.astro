@@ -12,9 +12,19 @@ const allPosts = await getCollection("writing");
 const allPeople = await getCollection("people");
 
 // Group people by category
-const researchPeople = allPeople.filter((person) => person.data.category === "research");
 const coreTeam = allPeople.filter((person) => person.data.category === "core");
 const advisors = allPeople.filter((person) => person.data.category === "advisor");
+
+// Custom order for research people
+const researchPeople = [
+  "tan-zhi-xuan", "atoosa-kasirzadeh", "michiel-bakker", "sydney-levine", "mh-tessler",
+  "jobst-heitzig", "bryce-goodman", "andrew-koh", "wes-holiday", "matija-franklin"
+].map(id => allPeople.find(person => person.id === id))
+.filter(Boolean)
+.concat(allPeople.filter(person => 
+  person.data.category === "research" && 
+  !["tan-zhi-xuan", "atoosa-kasirzadeh", "michiel-bakker", "sydney-levine", "mh-tessler", "jobst-heitzig", "bryce-goodman", "andrew-koh", "wes-holiday", "matija-franklin"].includes(person.id)
+));
 
 // Sort on pub date
 const sortedPosts = allPosts.sort((a, b) => {
@@ -250,7 +260,18 @@ const remainingPosts = sortedPosts.filter((post) => !post.data.featured);
         if (personId && peopleMap[personId]) {
           const personData = peopleMap[personId];
           hoverName.textContent = personData.name;
-          hoverRole.textContent = personData.role;
+          
+          // Hide role for research network people
+          const isResearchPerson = item.closest('.research-network');
+          if (isResearchPerson) {
+            hoverRole.style.display = "none";
+            hoverBio.style.marginTop = "1rem";
+          } else {
+            hoverRole.style.display = "block";
+            hoverRole.textContent = personData.role;
+            hoverBio.style.marginTop = "0";
+          }
+          
           hoverBio.textContent = personData.bio;
 
           if (personData.portrait) {
